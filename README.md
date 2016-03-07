@@ -39,4 +39,4 @@ The Sufia application is in the `sufia_app` directory in the user's home directo
 
 When running at, e.g., `example.com`, the running application can be accessed either via `http://example.com` or `https://example.com`.
 
-From the application home page, the `Login` button in the top-left can be used to create a user.  Select the "Sign up" link on the "Log in" page and then fill out the information on the "Sign up" page.  This will create a user and log it in.
+From the application home page, the `Login` button in the top-right can be used to create a user.  Select the "Sign up" link on the "Log in" page and then fill out the information on the "Sign up" page.  This will create a user and log it in.
