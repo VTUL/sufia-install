@@ -25,7 +25,7 @@ For the application to run, the following services are needed:
 
 Passenger is run via Nginx.  The command `sudo service nginx restart` can be used to restart Nginx/Passenger (and the Rails application).  Nginx listens on ports 80 and 443.
 
-Fedora and Solr are provided via `hydra-jetty`, which listens on port 8983.  The URL `http://127.0.0.1:8983` can be used to access these services, e.g., to check they are running.
+Fedora and Solr are provided via `hydra-jetty`, which listens on port 8983.  The URL `http://192.168.0.2:8983` can be used to access these services, e.g., to check they are running.
 
 Redis is provided by the `redis-server` system service.  Resque is provided by a `rake` task that is run via a system service.
 
