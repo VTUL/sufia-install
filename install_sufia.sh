@@ -135,8 +135,9 @@ cd "$HYDRA_HEAD_DIR"
 $RUN_AS_INSTALLUSER cat >> Gemfile <<EOF
 gem 'sufia', '6.6.0'
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'  # required to handle pagination properly in dashboard. See https://github.com/amatsuda/kaminari/pull/322
+gem 'active-fedora', '9.9.1'
 EOF
-$RUN_AS_INSTALLUSER bundle install
+$RUN_AS_INSTALLUSER bundle update
 $RUN_AS_INSTALLUSER bundle exec rails generate sufia:install -f
 $RUN_AS_INSTALLUSER bundle exec rake db:migrate
 $RUN_AS_INSTALLUSER cat > config/fedora.yml <<FEDORA_EOF
