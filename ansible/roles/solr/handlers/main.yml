@@ -1,0 +1,6 @@
+---
+- name: restart solr
+  service:
+    name: solr
+    state: restarted
+  become: yes

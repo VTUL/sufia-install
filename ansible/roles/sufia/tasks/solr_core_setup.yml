@@ -1,0 +1,117 @@
+---
+- block:
+  - name: create sufia solr core
+    file:
+      path: '{{ solr_data_dir }}/{{ project_solr_core }}/conf'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      state: directory
+  - name: ensure core name in core.properties
+    lineinfile:
+      dest: '{{ solr_data_dir }}/{{ project_solr_core }}/core.properties'
+      line: name={{ project_solr_core }}
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      create: True
+    notify: restart solr
+  - name: copy sufia's solrconfig.xml to the core
+    copy:
+      src: '{{ project_app_root }}/solr/config/solrconfig.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_core }}/conf/solrconfig.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    register: solrconfig
+    ignore_errors: True
+  - name: copy sufia's solrconfig.xml to the core from a legacy location
+    copy:
+      src: '{{ project_app_root }}/solr_conf/conf/solrconfig.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_core }}/conf/solrconfig.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    when: solrconfig|failed
+  - name: copy sufia's schema.xml to the core
+    copy:
+      src: '{{ project_app_root }}/solr/config/schema.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_core }}/conf/schema.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    register: schema
+    ignore_errors: True
+  - name: copy sufia's schema.xml to the core from a legacy location
+    copy:
+      src: '{{ project_app_root }}/solr_conf/conf/schema.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_core }}/conf/schema.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    when: schema|failed
+
+- block:
+  - name: create sufia solr test core
+    file:
+      path: '{{ solr_data_dir }}/{{ project_solr_test_core }}/conf'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      state: directory
+  - name: ensure test core name in core.properties
+    lineinfile:
+      dest: '{{ solr_data_dir }}/{{ project_solr_test_core }}/core.properties'
+      line: name={{ project_solr_test_core }}
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      create: True
+    notify: restart solr
+  - name: copy sufia's solrconfig.xml to the test core
+    copy:
+      src: '{{ project_app_root }}/solr/config/solrconfig.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_test_core }}/conf/solrconfig.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    register: test_solrconfig
+    ignore_errors: True
+  - name: copy sufia's solrconfig.xml to the test core from a legacy location
+    copy:
+      src: '{{ project_app_root }}/solr_conf/conf/solrconfig.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_test_core }}/conf/solrconfig.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    when: test_solrconfig|failed
+  - name: copy sufia's schema.xml to the test core
+    copy:
+      src: '{{ project_app_root }}/solr/config/schema.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_test_core }}/conf/schema.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    register: test_schema
+    ignore_errors: True
+  - name: copy sufia's schema.xml to the test core from a legacy location
+    copy:
+      src: '{{ project_app_root }}/solr_conf/conf/schema.xml'
+      dest: '{{ solr_data_dir }}/{{ project_solr_test_core }}/conf/schema.xml'
+      owner: '{{ solr_user }}'
+      group: '{{ solr_group }}'
+      mode: 0444
+      remote_src: True
+    notify: restart solr
+    when: test_schema|failed
+  when: project_app_env == 'development'
