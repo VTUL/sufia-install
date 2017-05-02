@@ -1,0 +1,69 @@
+---
+- block:
+  - name: add roles
+    command: bundle exec rake datarepo:add_roles
+    args:
+      chdir: '{{ project_app_root }}'
+
+  - name: copy list of users
+    copy:
+      src: "{{ local_files_dir }}/user_list.txt"
+      dest: '{{ project_app_root }}/user_list.txt'
+    ignore_errors: True
+    register: copy_user_list
+
+  - name: add users
+    command: bundle exec rake datarepo:populate_users
+    args:
+      chdir: '{{ project_app_root }}'
+    when: copy_user_list|succeeded
+
+  - name: remove list of users
+    file:
+      path: '{{ project_app_root }}/user_list.txt'
+      state: absent
+
+  - name: copy list of admins
+    copy:
+      src: "{{ local_files_dir }}/admin_list.txt"
+      dest: '{{ project_app_root }}/admin_list.txt'
+    ignore_errors: True
+    register: copy_admin_list
+
+  - name: add admins
+    command: bundle exec rake datarepo:upgrade_users
+    args:
+      chdir: '{{ project_app_root }}'
+    when: copy_admin_list|succeeded
+
+  - name: remove list of admins
+    file:
+      path: '{{ project_app_root }}/admin_list.txt'
+      state: absent
+
+  - name: ensure carousel image directory exists
+    file:
+      path: '{{ project_app_root }}/app/assets/images/carousel'
+      state: directory
+
+  - name: find old carousel images
+    find:
+      path: '{{ project_app_root }}/app/assets/images/carousel/'
+    register: images
+
+  - name: delete old carousel images
+    file:
+      path: '{{ item.path }}'
+      state: absent
+    with_items: '{{ images.files }}'
+
+  - name: add new carousel images
+    unarchive:
+      src: '{{ local_files_dir }}/images.zip'
+      dest: '{{ project_app_root }}/app/assets/images/carousel/'
+    ignore_errors: True
+
+  become: yes
+  become_user: '{{ project_owner }}'
+  environment:
+    RAILS_ENV: '{{ project_app_env }}'
